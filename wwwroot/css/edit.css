@@ -1,0 +1,25 @@
+﻿
+body {
+    background-color: aliceblue;
+}
+
+.Create {
+    background-color: burlywood;
+    border-radius: 10px;
+    border-color: black;
+}
+
+.form-control {
+    background-color: aliceblue;
+    border-radius: 10px;
+    border-color: black;
+}
+
+.btn {
+    background-color: aqua;
+}
+
+    .btn:hover {
+        color: goldenrod;
+        background-color: aliceblue;
+    }

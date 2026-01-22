@@ -1,0 +1,52 @@
+﻿@model EmployeesCrud.Models.Employee
+
+<form "asp-action="Create" method="post" class="Create col-md-4 card container mt-5 " >
+
+	<h2 class="text-lg-center">Employee form</h2>
+	<div class="form-group card-body text-black">
+		<div class="form-group ">
+
+			FirstName:<input asp-for="FirstName" class="form-control " placeholder="FirstName"></input>
+			<span asp-validation-for="FirstName" class="text-danger"></span>
+		</div><br />
+		<div class="form-group">
+			LastName:<input asp-for="LastName" class="form-control" placeholder="LastName"></input>
+			<span asp-validation-for="LastName" class="text-danger"></span>
+
+		</div><br />
+		<div class="form-group">
+
+			Gender:<select asp-for="Gender" class="form-control">
+				<option value="">Select Gender</option>
+				<option>Male</option>
+				<option>female</option>
+				
+
+			</select>
+			<span asp-validation-for="Gender" class="text-danger"></span>
+		</div><br />
+		<div class="form-group">
+
+			<label asp-for="DOB"></label>
+			<input asp-for="DOB" class="form-control" />
+			<span asp-validation-for="DOB" class="text-danger"></span>
+
+		</div ><br />
+		<button type="submit"  class="btn">
+			<span aria-hidden="true"></span>Submit
+
+
+		</button>
+		
+	</div>
+	
+</form>
+@section Styles {
+	<link rel="stylesheet" href="~/css/create.css" />
+
+}
+@section Scripts{
+	<partial name="_ValidationScriptsPartial" />
+}
+
+

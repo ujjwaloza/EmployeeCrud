@@ -1,0 +1,42 @@
+﻿body {
+    background-color: lightgray;
+}
+.custom-btn {
+    background-color: forestgreen;
+    color: black;
+    border-radius: 10px;
+    border-color: black;
+}
+
+    .custom-btn:hover {
+        background-color: antiquewhite;
+        color: black;
+    }
+
+.table td,
+.table th {
+    padding: 6px 10px;
+    vertical-align: middle;
+    line-height: 1.2;
+}
+
+.btn-sm {
+    padding: 2px 8px;
+    font-size: 0.85rem;
+  
+
+}
+.custom-btn1 {
+    background-color:orange;
+
+}
+.custom-btn2 {
+    background-color:red;
+}
+
+
+
+
+
+
+
