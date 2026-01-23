@@ -12,7 +12,7 @@ using System.Reflection.PortableExecutable;
 
 namespace EmployeesCrud.Controllers
 {
-    [Authorize]
+   
     public class EmployeeController : Controller
     {
         private readonly string _connectionString;
