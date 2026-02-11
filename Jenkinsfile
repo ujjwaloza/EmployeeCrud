@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "yourdockerhubusername/employeescrud"
+        DOCKER_IMAGE = "ujjwaloza/employeescrud"
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yourusername/EmployeesCrud.git'
+                git branch: 'main', url: 'https://github.com/ujjwaloza/EmployeesCrud.git'
             }
         }
 
