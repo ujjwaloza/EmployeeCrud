@@ -4,7 +4,7 @@ body {
 }
 
 .Create {
-    background-color: burlywood;
+    background-color:aliceblue;
     border-radius: 10px;
     border-color: black;
 }
@@ -16,10 +16,10 @@ body {
 }
 
 .btn {
-    background-color: aqua;
+    background-color:rebeccapurple;
 }
 
-    .btn:hover {
-        color: goldenrod;
-        background-color: aliceblue;
-    }
+.btn:hover {
+        background-color:green;
+        color:aliceblue;
+}

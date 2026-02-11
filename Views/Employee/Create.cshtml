@@ -1,6 +1,6 @@
 ﻿@model EmployeesCrud.Models.Employee
 
-<form "asp-action="Create" method="post" class="Create col-md-4 card container mt-5 " >
+<form asp-action="Create" method="post" class="Create col-md-4 card container mt-5 ">
 
 	<h2 class="text-lg-center">Employee form</h2>
 	<div class="form-group card-body text-black">
@@ -42,7 +42,7 @@
 	
 </form>
 @section Styles {
-	<link rel="stylesheet" href="~/css/create.css" />
+	<link rel="stylesheet" href="~/css/create.css" asp-append-version="true" />
 
 }
 @section Scripts{

@@ -1,6 +1,6 @@
 ﻿
 body {
-    background-color: aliceblue;
+    background-color:aliceblue;
 }
 
 .Create {
@@ -16,11 +16,10 @@ body {
 }
 
 .btn {
-    background-color: aqua;
+    background-color:aquamarine;
 }
-
-.btn:hover{
-    color:goldenrod;
-    background-color:aliceblue;
-    }
+.btn:hover {
+    background-color:green;
+    color:azure;
+}
 

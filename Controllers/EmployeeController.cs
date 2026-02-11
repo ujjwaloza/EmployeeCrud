@@ -175,47 +175,7 @@ namespace EmployeesCrud.Controllers
 
             return RedirectToAction("Index");
         }
-        public IActionResult ExportToExcel()
-        {
-            DataTable dt = new DataTable();//in-memorytable bridge between db data and excel
-            dt.Columns.Add("Id", typeof(int));
-            dt.Columns.Add("FirstName");
-            dt.Columns.Add("LastName");
-            dt.Columns.Add("Gender");
-            dt.Columns.Add("DOB");
-            using (SqlConnection con = new SqlConnection(_connectionString))
-            {
-                string query = "select Id, FirstName, LastName,Gender, DOB from Employees";
-                SqlCommand cmd = new SqlCommand(query, con);
-                con.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    dt.Rows.Add(
-                        reader["Id"],
-                        reader["FirstName"],
-                        reader["LastName"],
-                        reader["Gender"],
-                        Convert.ToDateTime(reader["DOB"]).ToShortDateString()
-                        );
-                }
-
-
-            }
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                wb.Worksheets.Add(dt, "Employees");
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Employees.xlsx");
-                }
-            }
-     
-
-
-
-    }
+      
         public IActionResult BulkDelete(string ids)
         {
             var idList = ids.Split(',').Select(int.Parse).ToList();

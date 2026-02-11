@@ -3,7 +3,7 @@
 <h2>Employees</h2>
 
 <a asp-action="Create" class="btn btn-success mb-3">Add Employee</a>
-<a asp-action="ExportToExcel" class="btn btn-success mb-3">Export To Excel</a>
+
 <div class="mb-3">
     <button id="editBtn" class="btn btn-warning me-2" disabled>
         Edit
@@ -41,48 +41,14 @@
     </tbody>
 
 </table>
+@section Scripts {
+   
+    <script src="~/js/index.js" asp-append-version="true" ></script>
+}
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/index.css" />
-}
-@section Scripts {
-    <script>
-        const checkboxes = document.querySelectorAll(".employee-checkbox");
-        const editBtn = document.getElementById("editBtn");
-        const deleteBtn = document.getElementById("deleteBtn");
+    
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
 
-        function getSelectedIds() {
-            return Array.from(checkboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
-        }
-
-        checkboxes.forEach(cb => {
-            cb.addEventListener("change", function () {
-                const selectedIds = getSelectedIds();
-
-              
-                deleteBtn.disabled = selectedIds.length === 0;
-
-           
-                editBtn.disabled = selectedIds.length !== 1;
-            });
-        });
-
-        editBtn.addEventListener("click", function () {
-            const selectedIds = getSelectedIds();
-            if (selectedIds.length === 1) {
-                window.location.href = `/Employee/Edit/${selectedIds[0]}`;
-            }
-        });
-
-        deleteBtn.addEventListener("click", function () {
-            const selectedIds = getSelectedIds();
-            if (selectedIds.length > 0) {
-                const ids = selectedIds.join(",");
-                window.location.href = `/Employee/BulkDelete?ids=${ids}`;
-            }
-        });
-    </script>
 }
 
