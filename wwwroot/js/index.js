@@ -35,3 +35,16 @@ deleteBtn.addEventListener("click", function () {
         window.location.href = `/Employee/BulkDelete?ids=${ids}`;
     }
 });
+function openModal() {
+    document.getElementById("searchModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("searchModal").style.display = "none";
+}
+function closeNoDataModal() {
+    document.getElementById("noDataModal").style.display = "none";
+}
+function confirmDelete() {
+    return confirm("Are you sure you want to delete this employee?");
+}

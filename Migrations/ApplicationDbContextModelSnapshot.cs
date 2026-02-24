@@ -30,8 +30,8 @@ namespace EmployeesCrud.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DOB")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DOB")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

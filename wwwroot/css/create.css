@@ -22,4 +22,9 @@ body {
     background-color:green;
     color:azure;
 }
+.form-select {
+    background-color: aliceblue;
+    border-radius: 10px;
+    border-color: black;
+}
 

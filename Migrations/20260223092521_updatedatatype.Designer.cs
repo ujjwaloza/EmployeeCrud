@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeesCrud.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260105124203_AddEmployee")]
-    partial class AddEmployee
+    [Migration("20260223092521_updatedatatype")]
+    partial class updatedatatype
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,8 @@ namespace EmployeesCrud.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DOB")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DOB")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

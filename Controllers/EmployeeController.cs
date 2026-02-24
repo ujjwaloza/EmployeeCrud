@@ -15,10 +15,13 @@ namespace EmployeesCrud.Controllers
    
     public class EmployeeController : Controller
     {
+        private readonly IConfiguration _configuration;
+       
         private readonly string _connectionString;
         public EmployeeController(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _configuration = configuration;
         }
         
         public IActionResult Index()
@@ -43,7 +46,7 @@ namespace EmployeesCrud.Controllers
                         FirstName = reader["FirstName"].ToString(),
                         LastName = reader["LastName"].ToString(),
                         Gender = reader["Gender"].ToString(),
-                        DOB = (DateTime)reader["DOB"]
+                        DateOfBirth = DateOnly.FromDateTime((DateTime)reader["DateOfBirth"])
                     });
 
                 }
@@ -62,18 +65,22 @@ namespace EmployeesCrud.Controllers
         [HttpPost]
         public IActionResult Create(Employee employee)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(employee);   // STOP here if validation fails
+            }
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
                 string query = @"INSERT INTO Employees 
-                         (FirstName, LastName, Gender, DOB)
-                         VALUES (@FirstName, @LastName, @Gender, @DOB)";
+                         (FirstName, LastName, Gender, DateOfBirth)
+                         VALUES (@FirstName, @LastName, @Gender, @DateOfBirth)";
 
                 SqlCommand cmd = new SqlCommand(query, con);
 
                 cmd.Parameters.AddWithValue("@FirstName", employee.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", employee.LastName);
                 cmd.Parameters.AddWithValue("@Gender", employee.Gender);
-                cmd.Parameters.AddWithValue("@DOB", employee.DOB);
+                cmd.Parameters.AddWithValue("@DateOfBirth", employee.DateOfBirth);
 
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -102,7 +109,7 @@ namespace EmployeesCrud.Controllers
                     employee.FirstName = reader["FirstName"].ToString();
                     employee.LastName = reader["LastName"].ToString();
                     employee.Gender = reader["Gender"].ToString();
-                    employee.DOB = (DateTime)reader["DOB"];
+                    employee.DateOfBirth = DateOnly.FromDateTime((DateTime)reader["DateOfBirth"]);
                 }
             }
 
@@ -117,7 +124,7 @@ namespace EmployeesCrud.Controllers
                          SET FirstName=@FirstName,
                              LastName=@LastName,
                              Gender=@Gender,
-                             DOB=@DOB
+                             DateOfBirth=@DateOfBirth
                          WHERE Id=@Id";
 
                 SqlCommand cmd = new SqlCommand(query, con);
@@ -126,7 +133,7 @@ namespace EmployeesCrud.Controllers
                 cmd.Parameters.AddWithValue("@FirstName", employee.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", employee.LastName);
                 cmd.Parameters.AddWithValue("@Gender", employee.Gender);
-                cmd.Parameters.AddWithValue("@DOB", employee.DOB);
+                cmd.Parameters.AddWithValue("@DateOfBirth", employee.DateOfBirth);
 
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -154,7 +161,7 @@ namespace EmployeesCrud.Controllers
                     employee.FirstName = reader["FirstName"].ToString();
                     employee.LastName = reader["LastName"].ToString();
                     employee.Gender = reader["Gender"].ToString();
-                    employee.DOB = (DateTime)reader["DOB"];
+                    employee.DateOfBirth = DateOnly.FromDateTime((DateTime)reader["DateOfBirth"]);
                 }
             }
 
@@ -197,5 +204,52 @@ namespace EmployeesCrud.Controllers
 
             return RedirectToAction("Index");
         }
+        public IActionResult Search(string searchTerm)
+        {
+            List<Employee> employees = new List<Employee>();
+
+            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                string query = "SELECT * FROM Employees";
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    query += @" WHERE 
+                        FirstName LIKE @search OR 
+                        LastName LIKE @search OR 
+                        YEAR(DateOfBirth) LIKE @search";
+                }
+
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                }
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    employees.Add(new Employee
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Gender = reader["Gender"].ToString(),
+                        DateOfBirth = DateOnly.FromDateTime(
+    Convert.ToDateTime(reader["DateOfBirth"])
+)
+                    });
+                }
+
+                con.Close();
+            }
+
+            return View("Index",employees);
+        }
+        
     }
 }

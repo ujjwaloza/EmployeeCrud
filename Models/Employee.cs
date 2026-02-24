@@ -5,12 +5,13 @@ public class Employee
     {
     [Key]
         public int Id { get; set; }
-    [Required]
+    [Required(ErrorMessage= "First Name is required")]
+    
         public string FirstName { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Last Name is required")]
         public string LastName { get; set; }
     [Required(ErrorMessage="Date of birth is necessary")]
-        public DateTime DOB { get; set; }
+        public DateOnly DateOfBirth { get; set; }
     [Required]
         public string Gender { get; set; }
     }
