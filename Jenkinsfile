@@ -7,12 +7,7 @@ pipeline {
 
     stages {
 
-       stage('Fail Demo') {
-    steps {
-        bat 'wrongcommand'
-    }
-}
-
+   
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t %DOCKER_IMAGE%:latest .'
