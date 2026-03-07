@@ -7,7 +7,11 @@ pipeline {
 
     stages {
 
-       
+       stage('Fail Demo') {
+    steps {
+        bat 'wrongcommand'
+    }
+}
 
         stage('Build Docker Image') {
             steps {
