@@ -6,36 +6,17 @@
 	<div class="form-group card-body text-black">
 		<div class="form-group ">
 
-			FirstName:<input asp-for="FirstName" class="form-control " placeholder="First Name" />
+			First Name:<input asp-for="FirstName" class="form-control " placeholder="First Name" />
 			<span asp-validation-for="FirstName" class="text-danger"></span>
 		</div><br />
 		<div class="form-group">
-			LastName:<input asp-for="LastName"  class="form-control" placeholder="Last Name" />
+			Last Name:<input asp-for="LastName"  class="form-control" placeholder="Last Name" />
 			<span asp-validation-for="LastName" class="text-danger"></span>
 
 		</div><br />
 		<div class="form-group">
 
-			@* Gender:<select asp-for="Gender" class="form-control">
-				<option value="">Select Gender</option>
-				<option value="Male">Male</option>
-				<option value="Female">female</option>
-				
-				class="btn 
-			</select> *@
-			@* <input type="hidden" asp-for="Gender" id="GenderInput" />
-
-			Gender:<button class="form-control dropdown-toggle"
-					type="button"
-					data-bs-toggle="dropdown">
-				Select Gender
-			</button>
-
-			<ul class="dropdown-menu">
-				<li><a class="dropdown-item" href="#" onclick="setGender('Male')">Male</a></li>
-				<li><a class="dropdown-item" href="#" onclick="setGender('Female')">Female</a></li>
-				<li><a class="dropdown-item" href="#" onclick="setGender('Other')">Other</a></li>
-			</ul> *@
+		
 			<div class="form-group">
 				<label asp-for="Gender"></label>
 
@@ -51,19 +32,21 @@
 		<div class="form-group">
 
 			<label asp-for="DateOfBirth"></label>
-			<input asp-for="DateOfBirth" class="form-control " type="date" />
+			<input asp-for="DateOfBirth" class="form-control" type="date" />
 			<span asp-validation-for="DateOfBirth" class="text-danger"></span>
 
 		</div ><br />
 		<button type="submit"  class="btn">
 			<span aria-hidden="true"></span>Submit
-
+			
 
 		</button>
+			
 		
 	</div>
 	
 </form>
+
 @section Styles {
 	<link rel="stylesheet" href="~/css/create.css" asp-append-version="true" />
 

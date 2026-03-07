@@ -1,62 +1,90 @@
 ﻿@model List<EmployeesCrud.Models.Employee>
 @{
-    var searchTerm = Context.Request.Query["searchTerm"].ToString();
-    bool isSearchActive = !string.IsNullOrEmpty(searchTerm);
-    bool noDataFound = isSearchActive && !Model.Any();
+    var name = Context.Request.Query["name"].ToString();
+    var year = Context.Request.Query["year"].ToString();
+
+    bool isSearchActive = !string.IsNullOrEmpty(name)
+                          || !string.IsNullOrEmpty(year);
 }
+@if (TempData["NoDataMessage"] != null)
+{
+    <script>
+        alert('@TempData["NoDataMessage"]');
+    </script>
+}
+
+
 <h2>Employees</h2>
 
 <div class="index-container">
-    @* <form method="get" asp-action="Search" class="search-container" autocomplete="off">
-
-        <input type="text" name="searchTerm"
-               placeholder="Search by Name or Year (e.g. 2025)"
-               value="@Context.Request.Query["searchTerm"]" />
-
-
-
-
-    </form> *@
+   
     <div class="button-container">
-        @if (noDataFound)
+        @* @if (noDataFound)
         {
             <script>
                 alert("No records found.");
 
                 window.location.href = '@Url.Action("Index", "Employee")';
             </script>
-        }
+        } *@
+       
+        <a asp-action="Create" class="btn btn-success opacity-100 text-dark text-opacity-100">Add</a>
+      
         @if (isSearchActive)
         {
             <a asp-action="Index" class="btn btn-secondary">
-                Reset
+                Clear
             </a>
         }
-        <a asp-action="Create" class="btn btn-success ">Add</a>
-
-        <button type="button" class="btn btn-primary" onclick="openModal()">
+        <button type="button" class="search" onclick="openSearchModal()">
             Search
         </button>
       
-        
-        <button id="editBtn" class="btn">
+        <button type="button" id="editBtn" class="btn"
+                onclick="openEditModal()" disabled>
             Edit
         </button>
 
-        <button id="deleteBtn" class="btn btn-danger" onclick="return confirmDelete()">
+        <button id="deleteBtn" type="button" class="btn " disabled>
             Delete
         </button>
     </div>
    
     <div class="table-container">
-        <table class="table table-bordered table-hover table-striped align-middle mt-3">
-            <thead class="table-primary">
+        <table class="table table-bordered table-hover table-striped align-middle mt-3" data-toggle="table" data-pagination="true" data-page-size="5" data-page-list="[5]" data-sortable="true" >
+            <thead class="table-primary" >
                 <tr>
-                    <th style="width:2px;">Select</th>
-                    <th style="width:10px;">id</th>
-                    <th style="width:153px">Name</th>
-                    <th style="width:30px">Gender</th>
-                    <th style="width:30px">DateOfBirth</th>
+                    <th class="col-select" data-sortable="false">
+                        <input type="checkbox" id="selectAll"/>
+                    </th>
+                    <th class="col-id">
+                        <a asp-action="Index"
+                           asp-route-sortColumn="Id"
+                           asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                            Id
+                        </a>
+                    </th>
+                    <th class="col-name">
+                        <a asp-action="Index"
+                           asp-route-sortColumn="FirstName"
+                           asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                            Name
+                        </a>
+                    </th>
+                    <th class="col-gender">
+                        <a asp-action="Index"
+                           asp-route-sortColumn="Gender"
+                           asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                            Gender
+                        </a>
+                    </th>
+                    <th class="col-dob" >
+                        <a asp-action="Index"
+                           asp-route-sortColumn="DateOfBirth"
+                           asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                            Date Of Birth
+                        </a>
+                    </th>
                 </tr>
             </thead>
 
@@ -81,20 +109,20 @@
        
     </div>
 </div>
-<div id="searchModal" class="modal">
+@* <div id="searchModal" class="modal">
 
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
 
         <h3>Search Employees</h3>
-
-        <form method="get" asp-action="Search" autocomplete="off">
-            <input type="text" name="searchTerm"
+        <form id="form" method="get" asp-action="Search" autocomplete="off">
+             <input type="text" name="searchTerm"
                    placeholder="Enter name or year..." />
-
+                   <br /><br /> 
+           
             <button type="submit" class="btn search-submit">
                 Search
-            </button>
+            </button> 
             @if (!Model.Any())
             {
                 <tr>
@@ -107,7 +135,72 @@
         
     </div>
 
+</div>  *@
+
+<div id="searchModal" class="modal" >
+    <div class="modal-content">
+
+        <span class="close-btn" onclick="closeSearchModal()">&times;</span>
+
+        <h3>Search Employees</h3>
+
+        <div class="search-options">
+            <button type="button" class="btn btn-secondary"
+                    onclick="showNameSearch()" >
+                Search by Name
+            </button>
+
+            <button type="button" class="btn btn-secondary"
+                    onclick="showYearSearch()" >
+                Search by Year
+            </button>
+        </div>
+
+        <br />
+
+        <form id="nameSearchForm"
+              method="get"
+              asp-action="Search"
+              style="display:none;">
+
+            <input type="text"
+                   name="name"
+                   placeholder="Enter name..."
+                   class="form-control" autocomplete="off" />
+
+            <br />
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-danger">
+                        No records found
+                    </td>
+                </tr>
+            }
+        </form>
+
+        <form id="yearSearchForm"
+              method="get"
+              asp-action="Search"
+              style="display:none;">
+
+            <input type="number"
+                   name="year"
+                   placeholder="Enter year (e.g. 2026)"
+                   class="form-control" autocomplete="off" />
+
+            <br />
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+        </form>
+
+    </div>
 </div>
+
 <div id="noDataModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeNoDataModal()">&times;</span>
@@ -120,6 +213,23 @@
         </button>
     </div>
 </div>
+@* <nav class="page" aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav> *@
 @section Scripts {
    
     <script src="~/js/index.js" asp-append-version="true" ></script>

@@ -23,14 +23,53 @@ namespace EmployeesCrud.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _configuration = configuration;
         }
-        
+
+        //public IActionResult Index(string sortColumn, string sortOrder)
+        //{
+        //    List<Employee> employees = new List<Employee>();
+
+        //    using (SqlConnection con = new SqlConnection(_connectionString))
+        //    {
+        //        string query = "SELECT * FROM Employees";
+
+        //        if (!string.IsNullOrEmpty(sortColumn))
+        //        {
+        //            query += $" ORDER BY {sortColumn} {sortOrder}";
+        //        }
+
+        //        SqlCommand cmd = new SqlCommand(query, con);
+
+        //        con.Open();
+        //        SqlDataReader reader = cmd.ExecuteReader();
+
+        //        while (reader.Read())
+        //        {
+        //            employees.Add(new Employee
+        //            {
+        //                Id = (int)reader["Id"],
+        //                FirstName = reader["FirstName"].ToString(),
+        //                LastName = reader["LastName"].ToString(),
+        //                Gender = reader["Gender"].ToString(),
+        //                DateOfBirth = DateOnly.FromDateTime((DateTime)reader["DateOfBirth"])
+        //            });
+        //        }
+        //    }
+
+        //    ViewBag.SortColumn = sortColumn;
+        //    ViewBag.SortOrder = sortOrder;
+
+        //    return View(employees);
+        //}
+
+
         public IActionResult Index()
         {
             List<Employee> employees = new List<Employee>();
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM Employees";
+                string query = "SELECT * FROM Employees ORDER BY Id Desc";
+
                 SqlCommand cmd = new SqlCommand(query, con);
 
                 con.Open();
@@ -38,8 +77,6 @@ namespace EmployeesCrud.Controllers
 
                 while (reader.Read())
                 {
-
-
                     employees.Add(new Employee
                     {
                         Id = (int)reader["Id"],
@@ -48,9 +85,7 @@ namespace EmployeesCrud.Controllers
                         Gender = reader["Gender"].ToString(),
                         DateOfBirth = DateOnly.FromDateTime((DateTime)reader["DateOfBirth"])
                     });
-
                 }
-
             }
 
             return View(employees);
@@ -67,7 +102,7 @@ namespace EmployeesCrud.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(employee);   // STOP here if validation fails
+                return View(employee);  
             }
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
@@ -118,6 +153,11 @@ namespace EmployeesCrud.Controllers
         [HttpPost]
         public IActionResult Edit(Employee employee)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
+            
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
                 string query = @"UPDATE Employees 
@@ -204,30 +244,83 @@ namespace EmployeesCrud.Controllers
 
             return RedirectToAction("Index");
         }
-        public IActionResult Search(string searchTerm)
+        //        public IActionResult Search(string searchTerm)
+        //        {
+        //            List<Employee> employees = new List<Employee>();
+
+        //            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+        //            using (SqlConnection con = new SqlConnection(connectionString))
+        //            {
+        //                string query = "SELECT * FROM Employees";
+
+        //                if (!string.IsNullOrEmpty(searchTerm))
+        //                {
+        //                    query += @" WHERE 
+        //                        FirstName LIKE @search OR 
+        //                        LastName LIKE @search OR 
+        //                        YEAR(DateOfBirth) LIKE @search";
+        //                }
+
+        //                SqlCommand cmd = new SqlCommand(query, con);
+
+        //                if (!string.IsNullOrEmpty(searchTerm))
+        //                {
+        //                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+        //                }
+        //                con.Open();
+        //                SqlDataReader reader = cmd.ExecuteReader();
+
+        //                while (reader.Read())
+        //                {
+        //                    employees.Add(new Employee
+        //                    {
+        //                        Id = Convert.ToInt32(reader["Id"]),
+        //                        FirstName = reader["FirstName"].ToString(),
+        //                        LastName = reader["LastName"].ToString(),
+        //                        Gender = reader["Gender"].ToString(),
+        //                        DateOfBirth = DateOnly.FromDateTime(Convert.ToDateTime(reader["DateOfBirth"])
+
+        //)
+        //                    });
+        //                }
+
+        //                con.Close();
+        //            }
+
+        //            return View("Index",employees);
+        //        }
+        public IActionResult Search(string name, int? year)
         {
             List<Employee> employees = new List<Employee>();
 
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
-
-            using (SqlConnection con = new SqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM Employees";
-
-                if (!string.IsNullOrEmpty(searchTerm))
+                string query = "SELECT * FROM Employees WHERE 1=1";
+                
+                if (!string.IsNullOrEmpty(name))
                 {
-                    query += @" WHERE 
-                        FirstName LIKE @search OR 
-                        LastName LIKE @search OR 
-                        YEAR(DateOfBirth) LIKE @search";
+                    query += " AND (FirstName LIKE @name OR LastName LIKE @name)";
+                }
+
+                if (year.HasValue)
+                {
+                    query += " AND YEAR(DateOfBirth) = @year";
                 }
 
                 SqlCommand cmd = new SqlCommand(query, con);
+               
 
-                if (!string.IsNullOrEmpty(searchTerm))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                    cmd.Parameters.AddWithValue("@name", "%" + name + "%");
                 }
+
+                if (year.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@year", year.Value);
+                }
+
                 con.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -235,21 +328,22 @@ namespace EmployeesCrud.Controllers
                 {
                     employees.Add(new Employee
                     {
-                        Id = Convert.ToInt32(reader["Id"]),
+                        Id = (int)reader["Id"],
                         FirstName = reader["FirstName"].ToString(),
                         LastName = reader["LastName"].ToString(),
                         Gender = reader["Gender"].ToString(),
-                        DateOfBirth = DateOnly.FromDateTime(
-    Convert.ToDateTime(reader["DateOfBirth"])
-)
+                        DateOfBirth = DateOnly.FromDateTime((DateTime)reader["DateOfBirth"])
                     });
                 }
-
-                con.Close();
             }
 
-            return View("Index",employees);
+            if (!employees.Any())
+            {
+                TempData["NoDataMessage"] = "No records found.";
+                return RedirectToAction("Index");
+            }
+
+            return View("Index", employees);
         }
-        
     }
 }
